@@ -1,59 +1,41 @@
-import React, { useState } from 'react';
-import productsData from './mock.json';
-import { Box, Button, TextField, Typography, Stack } from '@mui/material';
-import ProductCard from './ProductCard';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { Layout } from './components';
+import { Home, About, Categories, Contact, NotFound } from './pages';
+import NewProduct from './pages/NewProduct';
+import { ProductsProvider } from './contexts/ProductsContext';
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  pictureUrl: string;
-}
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 function App() {
-  const [code, setCode] = useState('');
-  const [products, setProducts] = useState<Product[]>(productsData);
-
-  const handleFilter = () => {
-    if (!code) {
-      setProducts(productsData);
-    } else {
-      const filtered = productsData.filter((p) => String(p.id) === code.trim());
-      setProducts(filtered);
-    }
-  };
-
   return (
-    <Box sx={{ maxWidth: 1000, mx: 'auto', mt: 6, p: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, gap: 2 }}>
-        <TextField
-          label="Código"
-          variant="outlined"
-          size="small"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          sx={{ width: 200 }}
-        />
-        <Button variant="contained" onClick={handleFilter} sx={{ height: 40 }}>
-          Filtrar
-        </Button>
-      </Box>
-      <Stack spacing={3}>
-        {products.length === 0 ? (
-          <Typography variant="h6" sx={{ color: 'text.secondary', mt: 4 }}>
-            Nenhum produto encontrado.
-          </Typography>
-        ) : (
-          products.map((product) => (
-            <Box key={product.id}>
-              <ProductCard product={product} />
-            </Box>
-          ))
-        )}
-      </Stack>
-    </Box>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ProductsProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/novo-produto" element={<NewProduct />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </ProductsProvider>
+    </ThemeProvider>
   );
 }
 

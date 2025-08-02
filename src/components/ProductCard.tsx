@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ProductCard.module.css';
 import { Button } from '@mui/material';
+import { useProducts } from '../contexts/ProductsContext';
+import EditProductModal from './EditProductModal';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 export interface Product {
   id: number;
@@ -20,8 +23,29 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { updateProduct, deleteProduct } = useProducts();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleEdit = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const handleSaveEdit = (productData: Omit<Product, 'id'>) => {
+    updateProduct(product.id, productData);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteProduct(product.id);
+  };
+
   return (
-    <div className={styles.card}>
+    <>
+      <div className={styles.card}>
       <div className={styles.imageArea}>
         <img
           src={product.pictureUrl}
@@ -39,6 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Button
             variant="contained"
             className={styles.editButton}
+            onClick={handleEdit}
             disableElevation
             sx={{
               minWidth: 'unset',
@@ -56,6 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Button
             variant="contained"
             className={styles.deleteButton}
+            onClick={handleDelete}
             disableElevation
             sx={{
               minWidth: 'unset',
@@ -73,5 +99,21 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
     </div>
+
+    {/* Modais */}
+    <EditProductModal
+      open={editModalOpen}
+      onClose={() => setEditModalOpen(false)}
+      onSave={handleSaveEdit}
+      product={product}
+    />
+
+    <DeleteConfirmationModal
+      open={deleteModalOpen}
+      onClose={() => setDeleteModalOpen(false)}
+      onConfirm={handleConfirmDelete}
+      productName={product.name}
+    />
+  </>
   );
 } 

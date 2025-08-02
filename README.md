@@ -1,49 +1,175 @@
-# portal-produtos
-Portal de produtos desenvolvido em React com TypeScript e Material-UI
+# Portal de Produtos
 
-## Getting Started with Create React App
+Portal de produtos desenvolvido em React com TypeScript e Material-UI para gerenciamento de catálogo de produtos.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📋 Sobre o Projeto
 
-## Available Scripts
+Este projeto é uma aplicação web para gerenciamento de produtos, permitindo visualizar, criar, editar e excluir produtos de um catálogo. Foi desenvolvido utilizando tecnologias modernas do React com foco em uma interface responsiva e intuitiva.
 
-In the project directory, you can run:
+## 🚀 Funcionalidades
+
+- **Listagem de Produtos**: Visualização de todos os produtos em cards organizados
+- **Pesquisa por ID**: Filtro para encontrar produtos específicos
+- **Criação de Produtos**: Formulário completo para adicionar novos produtos
+- **Edição de Produtos**: Modal para editar informações de produtos existentes
+- **Exclusão de Produtos**: Confirmação segura antes de remover produtos
+- **Layout Responsivo**: Interface adaptável para desktop e mobile
+- **Navegação**: Menu lateral com diferentes seções do portal
+
+## 🛠️ Tecnologias Utilizadas
+
+- **React 19.1.0** - Biblioteca principal
+- **TypeScript 4.9.5** - Tipagem estática
+- **Material-UI 7.2.0** - Componentes de interface
+- **React Router DOM 6.29.0** - Roteamento
+- **CSS Modules** - Estilização modular
+- **Context API** - Gerenciamento de estado global
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── Layout.tsx       # Layout principal com sidebar
+│   ├── ProductCard.tsx  # Card de produto
+│   ├── EditProductModal.tsx     # Modal de edição
+│   └── DeleteConfirmationModal.tsx # Modal de confirmação
+├── contexts/            # Contextos do React
+│   └── ProductsContext.tsx # Estado global dos produtos
+├── pages/               # Páginas da aplicação
+│   ├── Home.tsx         # Página principal
+│   ├── NewProduct.tsx   # Formulário de novo produto
+│   ├── Categories.tsx   # Página de categorias
+│   ├── About.tsx        # Página sobre
+│   └── Contact.tsx      # Página de contato
+├── mock.json           # Dados de exemplo
+└── App.tsx             # Componente raiz
+```
+
+## 🎯 Páginas Disponíveis
+
+- **Home (/)** - Lista de produtos com filtro e botão para criar novo produto
+- **Novo Produto (/novo-produto)** - Formulário para adicionar produtos
+- **Categorias (/categories)** - Página de categorias (em desenvolvimento)
+- **Sobre (/about)** - Informações sobre o projeto
+- **Contato (/contact)** - Página de contato
+
+## 🔧 Instalação e Execução
+
+### Pré-requisitos
+
+- Node.js (versão 16 ou superior)
+- npm ou yarn
+
+### Passos para executar
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/Gustavocirulo/portal-produtos.git
+cd portal-produtos-novo
+```
+
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Execute o projeto:
+```bash
+npm start
+```
+
+4. Abra o navegador em [http://localhost:3000](http://localhost:3000)
+
+## 📱 Interface do Usuário
+
+### Menu de Navegação
+- **🏠 Início** - Lista de produtos
+- **📂 Categorias** - Organização por categorias  
+- **ℹ️ Sobre** - Informações do projeto
+- **📞 Contato** - Formulário de contato
+
+### Recursos dos Produtos
+- **Visualização**: Cards com imagem, nome, descrição, preço e categoria
+- **Filtro**: Busca por ID do produto
+- **CRUD Completo**: Criar, editar e excluir produtos
+- **Validação**: Formulários com validação de campos obrigatórios
+
+## 🎨 Design e Responsividade
+
+- **Desktop**: Sidebar fixa com conteúdo principal ao lado
+- **Mobile**: Menu hambúrguer com drawer lateral
+- **Tema**: Material Design com cores personalizadas
+- **Tipografia**: Roboto como fonte principal
+
+## 🔄 Gerenciamento de Estado
+
+O projeto utiliza React Context API para gerenciar o estado global dos produtos:
+
+- **ProductsContext**: Centraliza operações CRUD
+- **Estado de Loading**: Indicadores visuais durante operações
+- **Persistência**: Dados mantidos em memória durante a sessão
+
+## 📊 Dados de Exemplo
+
+O arquivo `mock.json` contém produtos de exemplo com as seguintes propriedades:
+- `id` - Identificador único
+- `name` - Nome do produto
+- `description` - Descrição detalhada
+- `price` - Preço em reais
+- `category` - Categoria do produto
+- `pictureUrl` - URL da imagem
+
+## 🚀 Scripts Disponíveis
+
+## 🚀 Scripts Disponíveis
 
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Executa a aplicação em modo de desenvolvimento.\
+Abra [http://localhost:3000](http://localhost:3000) para visualizar no navegador.\
+A página recarrega automaticamente quando você faz alterações.
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Executa os testes em modo interativo.\
+Veja mais informações sobre [execução de testes](https://facebook.github.io/create-react-app/docs/running-tests).
 
 ### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Gera a build de produção na pasta `build`.\
+Otimiza o React para melhor performance em produção.\
+Os arquivos são minificados e incluem hashes nos nomes.
 
 ### `npm run eject`
+⚠️ **Operação irreversível!** Remove a abstração do Create React App.\
+Use apenas se precisar de configurações avançadas.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🤝 Contribuição
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📄 Licença
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Este projeto foi criado para fins educacionais como parte do curso da UFSCar.
 
-## Learn More
+## 👨‍💻 Desenvolvedor
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Desenvolvido como projeto acadêmico para demonstrar conhecimentos em:
+- Desenvolvimento Frontend com React
+- Gerenciamento de Estado
+- Interface Responsiva
+- TypeScript
+- Material-UI
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📚 Recursos Úteis
+
+- [Documentação do React](https://reactjs.org/)
+- [Material-UI Documentation](https://mui.com/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [React Router](https://reactrouter.com/)
+
+---
+
+Desenvolvido usando React + TypeScript + Material-UI
