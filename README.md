@@ -16,12 +16,12 @@ Este projeto é uma aplicação web para gerenciamento de produtos, permitindo v
 - **Layout Responsivo**: Interface adaptável para desktop e mobile
 - **Navegação**: Menu lateral com diferentes seções do portal
 
-## 🛠️ Tecnologias Utilizadas
 
 - **React 19.1.0** - Biblioteca principal
 - **TypeScript 4.9.5** - Tipagem estática
 - **Material-UI 7.2.0** - Componentes de interface
 - **React Router DOM 6.29.0** - Roteamento
+- **Axios** - Cliente HTTP para requisições à API
 - **CSS Modules** - Estilização modular
 - **Context API** - Gerenciamento de estado global
 

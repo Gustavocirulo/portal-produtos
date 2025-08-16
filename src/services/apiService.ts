@@ -1,4 +1,5 @@
 import { config, buildApiUrl, debugLog } from '../config/environment';
+import axios from 'axios';
 
 // Interface para o produto vindo da API
 export interface ApiProduct {
@@ -52,78 +53,71 @@ class ApiService {
     return localStorage.getItem(config.AUTH.TOKEN_KEY);
   }
 
-  private getHeaders(includeAuth: boolean = true): HeadersInit {
-    const headers: HeadersInit = {
+  private getHeaders(includeAuth: boolean = true): Record<string, string> {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-
     if (includeAuth) {
       const token = this.getAuthToken();
       if (token) {
         headers['Authorization'] = `${token}`;
       }
     }
-
     return headers;
   }
 
-  private getHeadersWithoutContentType(includeAuth: boolean = true): HeadersInit {
-    const headers: HeadersInit = {};
-
+  private getHeadersWithoutContentType(includeAuth: boolean = true): Record<string, string> {
+    const headers: Record<string, string> = {};
     if (includeAuth) {
       const token = this.getAuthToken();
       if (token) {
         headers['Authorization'] = `${token}`;
       }
     }
-
     return headers;
   }
 
-  private async handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.message || `HTTP Error: ${response.status}`;
-      debugLog('API Error:', { status: response.status, message: errorMessage });
-      throw new Error(errorMessage);
+  private handleAxiosError(error: any) {
+    if (error.response) {
+      debugLog('API Error:', error.response.data);
+      throw new Error(error.response.data?.message || 'Erro na requisição');
     }
-
-    const data = await response.json();
-    debugLog('API Response:', data);
-    return data;
+  throw error;
   }
 
   // Login
   async login(email: string, password: string): Promise<LoginResponse> {
     const url = buildApiUrl(config.ENDPOINTS.LOGIN);
     debugLog('Login request to:', url);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: this.getHeaders(false), // Não incluir auth no login
-      body: JSON.stringify({ email, password }),
-    });
-
-    return this.handleResponse<LoginResponse>(response);
+    try {
+      const { data } = await axios.post<LoginResponse>(url, { email, password }, {
+        headers: this.getHeaders(false),
+      });
+      debugLog('API Response:', data);
+      return data;
+    } catch (error) {
+      this.handleAxiosError(error);
+      return undefined as any;
+    }
   }
 
   // Buscar produtos
   async fetchProducts(): Promise<ApiProduct[]> {
     const url = buildApiUrl(config.ENDPOINTS.PRODUCTS);
     debugLog('Fetching products from:', url);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: this.getHeaders(true), // Incluir auth token
-    });
-
-    const data = await this.handleResponse<ProductsApiResponse>(response);
-    
-    if (!data.success) {
-      throw new Error(data.message || 'Erro ao buscar produtos');
+    try {
+      const { data } = await axios.get<ProductsApiResponse>(url, {
+        headers: this.getHeaders(true),
+      });
+      debugLog('API Response:', data);
+      if (!data.success) {
+        throw new Error(data.message || 'Erro ao buscar produtos');
+      }
+      return data.data;
+    } catch (error) {
+      this.handleAxiosError(error);
+      return undefined as any;
     }
-
-    return data.data;
   }
 
   // Buscar categorias (baseado nos produtos)
@@ -137,41 +131,48 @@ class ApiService {
   async createProduct(productData: ProductCreateRequest): Promise<CrudResponse> {
     const url = buildApiUrl(config.ENDPOINTS.PRODUCTS_CREATE);
     debugLog('Creating product:', productData);
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: this.getHeaders(true),
-      body: JSON.stringify(productData),
-    });
-
-    return this.handleResponse<CrudResponse>(response);
+    try {
+      const { data } = await axios.post<CrudResponse>(url, productData, {
+        headers: this.getHeaders(true),
+      });
+      debugLog('API Response:', data);
+      return data;
+    } catch (error) {
+      this.handleAxiosError(error);
+    throw new Error('Erro ao criar produto');
+    }
   }
 
   // Atualizar produto
   async updateProduct(id: number, productData: ProductCreateRequest): Promise<CrudResponse> {
     const url = buildApiUrl(`${config.ENDPOINTS.PRODUCTS_UPDATE}/${id}`);
     debugLog('Updating product:', { id, productData });
-
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: this.getHeaders(true),
-      body: JSON.stringify(productData),
-    });
-
-    return this.handleResponse<CrudResponse>(response);
+    try {
+      const { data } = await axios.put<CrudResponse>(url, productData, {
+        headers: this.getHeaders(true),
+      });
+      debugLog('API Response:', data);
+      return data;
+    } catch (error) {
+      this.handleAxiosError(error);
+    throw new Error('Erro ao atualizar produto');
+    }
   }
 
   // Deletar produto
   async deleteProduct(id: number): Promise<CrudResponse> {
     const url = buildApiUrl(`${config.ENDPOINTS.PRODUCTS_DELETE}/${id}`);
     debugLog('Deleting product:', { id });
-
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: this.getHeadersWithoutContentType(true), // Headers sem Content-Type
-    });
-
-    return this.handleResponse<CrudResponse>(response);
+    try {
+      const { data } = await axios.delete<CrudResponse>(url, {
+        headers: this.getHeadersWithoutContentType(true),
+      });
+      debugLog('API Response:', data);
+      return data;
+    } catch (error) {
+      this.handleAxiosError(error);
+    throw new Error('Erro ao deletar produto');
+    }
   }
 }
 
