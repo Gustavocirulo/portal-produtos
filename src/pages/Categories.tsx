@@ -1,16 +1,23 @@
 import React from 'react';
+import { useLoaderData } from 'react-router-dom';
 import { Box, Typography, Paper, Chip, Stack } from '@mui/material';
 
-const categories = [
-  { name: 'Eletrônicos', count: 15, color: 'primary' },
-  { name: 'Roupas', count: 8, color: 'secondary' },
-  { name: 'Casa e Jardim', count: 12, color: 'success' },
-  { name: 'Esportes', count: 6, color: 'warning' },
-  { name: 'Livros', count: 20, color: 'info' },
-  { name: 'Beleza', count: 10, color: 'error' },
-];
+interface CategoriesLoaderData {
+  categories: string[];
+}
 
 function Categories() {
+  const { categories } = useLoaderData() as CategoriesLoaderData;
+
+  // Simula cores para as categorias (em um app real, isso viria do backend)
+  const categoryColors = ['primary', 'secondary', 'success', 'warning', 'info', 'error'] as const;
+  
+  const categoriesWithColors = categories.map((category, index) => ({
+    name: category,
+    color: categoryColors[index % categoryColors.length],
+    count: Math.floor(Math.random() * 20) + 5 // Simula quantidade de produtos
+  }));
+
   return (
     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
       <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
@@ -34,7 +41,7 @@ function Categories() {
           mb: 4
         }}
       >
-        {categories.map((category) => (
+        {categoriesWithColors.map((category, index) => (
           <Paper 
             key={category.name}
             sx={{ 
@@ -86,7 +93,7 @@ function Categories() {
         >
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-              {categories.reduce((sum, cat) => sum + cat.count, 0)}
+              {categoriesWithColors.reduce((sum, cat) => sum + cat.count, 0)}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Total de Produtos
@@ -102,7 +109,7 @@ function Categories() {
           </Box>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-              {Math.round(categories.reduce((sum, cat) => sum + cat.count, 0) / categories.length)}
+              {Math.round(categoriesWithColors.reduce((sum, cat) => sum + cat.count, 0) / categoriesWithColors.length)}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Média por Categoria
@@ -110,7 +117,7 @@ function Categories() {
           </Box>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
-              {Math.max(...categories.map(cat => cat.count))}
+              {Math.max(...categoriesWithColors.map(cat => cat.count))}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Maior Categoria

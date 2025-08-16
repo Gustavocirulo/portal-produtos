@@ -1,10 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { Layout } from './components';
-import { Home, About, Categories, Contact, NotFound } from './pages';
-import NewProduct from './pages/NewProduct';
 import { ProductsProvider } from './contexts/ProductsContext';
+import { router } from './Routes';
 
 const theme = createTheme({
   palette: {
@@ -22,18 +20,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <ProductsProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/novo-produto" element={<NewProduct />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        </Router>
+        <RouterProvider router={router} />
       </ProductsProvider>
     </ThemeProvider>
   );

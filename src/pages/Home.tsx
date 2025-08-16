@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Stack, CircularProgress } from '@mui/material';
+import { Link, useLoaderData } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Stack } from '@mui/material';
 import ProductCard from '../components/ProductCard';
-import { useProducts } from '../contexts/ProductsContext';
+import { Product } from '../contexts/ProductsContext';
+
+interface HomeLoaderData {
+  products: Product[];
+}
 
 function Home() {
-  const { products, loading } = useProducts();
+  const { products } = useLoaderData() as HomeLoaderData;
   const [code, setCode] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
 
@@ -21,14 +25,6 @@ function Home() {
       setFilteredProducts(filtered);
     }
   };
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-        <CircularProgress />
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
