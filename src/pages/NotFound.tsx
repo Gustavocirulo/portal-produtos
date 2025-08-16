@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 
-function NotFound() {
+const NotFound: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
       <Paper sx={{ p: 4, textAlign: 'center' }}>
@@ -17,6 +17,6 @@ function NotFound() {
       </Paper>
     </Box>
   );
-}
+};
 
 export default NotFound;

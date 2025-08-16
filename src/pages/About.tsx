@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Paper, Stack } from '@mui/material';
 
-function About() {
+const About: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
       <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
@@ -55,6 +55,6 @@ function About() {
       </Stack>
     </Box>
   );
-}
+};
 
 export default About;

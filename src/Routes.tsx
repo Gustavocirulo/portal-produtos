@@ -6,7 +6,7 @@ import productsData from './mock.json';
 import { Product } from './contexts/ProductsContext';
 
 // Componente wrapper para o Layout com Outlet
-const LayoutWrapper = () => (
+const LayoutWrapper: React.FC = () => (
   <Layout>
     <Outlet />
   </Layout>

@@ -9,7 +9,7 @@ import {
   Stack
 } from '@mui/material';
 
-function Contact() {
+const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -176,6 +176,6 @@ function Contact() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Contact;

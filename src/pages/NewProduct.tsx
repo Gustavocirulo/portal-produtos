@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useProducts } from '../contexts/ProductsContext';
 
-function NewProduct() {
+const NewProduct: React.FC = () => {
   const navigate = useNavigate();
   const { addProduct } = useProducts();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -205,6 +205,6 @@ function NewProduct() {
       </Paper>
     </Box>
   );
-}
+};
 
 export default NewProduct;

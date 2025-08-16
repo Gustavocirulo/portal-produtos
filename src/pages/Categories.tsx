@@ -6,7 +6,7 @@ interface CategoriesLoaderData {
   categories: string[];
 }
 
-function Categories() {
+const Categories: React.FC = () => {
   const { categories } = useLoaderData() as CategoriesLoaderData;
 
   // Simula cores para as categorias (em um app real, isso viria do backend)
@@ -127,6 +127,6 @@ function Categories() {
       </Paper>
     </Box>
   );
-}
+};
 
 export default Categories;

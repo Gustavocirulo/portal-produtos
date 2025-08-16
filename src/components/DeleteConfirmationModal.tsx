@@ -15,7 +15,7 @@ interface DeleteConfirmationModalProps {
   productName: string;
 }
 
-function DeleteConfirmationModal({ open, onClose, onConfirm, productName }: DeleteConfirmationModalProps) {
+const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ open, onClose, onConfirm, productName }) => {
   const handleConfirm = () => {
     onConfirm();
     onClose();
@@ -42,6 +42,6 @@ function DeleteConfirmationModal({ open, onClose, onConfirm, productName }: Dele
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default DeleteConfirmationModal;

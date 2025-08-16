@@ -22,7 +22,7 @@ interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { updateProduct, deleteProduct } = useProducts();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -116,4 +116,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     />
   </>
   );
-} 
+};
+
+export default ProductCard; 

@@ -8,7 +8,7 @@ interface HomeLoaderData {
   products: Product[];
 }
 
-function Home() {
+const Home: React.FC = () => {
   const { products } = useLoaderData() as HomeLoaderData;
   const [code, setCode] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
@@ -71,6 +71,6 @@ function Home() {
       </Stack>
     </Box>
   );
-}
+};
 
 export default Home;

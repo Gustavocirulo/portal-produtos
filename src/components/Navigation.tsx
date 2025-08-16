@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 
-function Navigation() {
+const Navigation: React.FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -44,6 +44,6 @@ function Navigation() {
       </Toolbar>
     </AppBar>
   );
-}
+};
 
 export default Navigation;

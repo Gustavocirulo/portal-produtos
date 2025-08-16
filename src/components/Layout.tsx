@@ -36,7 +36,7 @@ const menuItems: MenuItem[] = [
   { text: 'Contato', icon: <span>📧</span>, path: '/contact' },
 ];
 
-function Layout({ children }: LayoutProps) {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
   const theme = useTheme();
@@ -228,6 +228,6 @@ function Layout({ children }: LayoutProps) {
       </Box>
     </Box>
   );
-}
+};
 
 export default Layout;

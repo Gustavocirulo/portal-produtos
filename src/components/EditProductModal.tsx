@@ -17,7 +17,7 @@ interface EditProductModalProps {
   product: Product;
 }
 
-function EditProductModal({ open, onClose, onSave, product }: EditProductModalProps) {
+const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSave, product }) => {
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
@@ -192,6 +192,6 @@ function EditProductModal({ open, onClose, onSave, product }: EditProductModalPr
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default EditProductModal;
