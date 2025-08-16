@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Stack } from '@mui/material';
 import ProductCard from '../components/ProductCard';
-import { Product } from '../contexts/ProductsContext';
+import { useProducts } from '../contexts/ProductsContext';
 
-interface HomeLoaderData {
-  products: Product[];
-}
 
 const Home: React.FC = () => {
-  const { products } = useLoaderData() as HomeLoaderData;
+  const { products, loading } = useProducts();
   const [code, setCode] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
 
-  React.useEffect(() => {
-    setFilteredProducts(products);
-  }, [products]);
+  // useEffect para filtrar produtos automaticamente com debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!code.trim()) {
+        setFilteredProducts(products);
+      } else {
+        const filtered = products.filter((p) => String(p.id) === code.trim());
+        setFilteredProducts(filtered);
+      }
+    }, 500); // 500ms de debounce
 
-  const handleFilter = () => {
-    if (!code) {
-      setFilteredProducts(products);
-    } else {
-      const filtered = products.filter((p) => String(p.id) === code.trim());
-      setFilteredProducts(filtered);
-    }
-  };
+    return () => clearTimeout(timeoutId);
+  }, [code, products]);
+
 
   return (
     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
@@ -50,25 +50,28 @@ const Home: React.FC = () => {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           sx={{ width: 200 }}
+          placeholder="Digite o código do produto..."
         />
-        <Button variant="contained" onClick={handleFilter} sx={{ height: 40 }}>
-          Filtrar
-        </Button>
       </Box>
-      
-      <Stack spacing={3}>
-        {filteredProducts.length === 0 ? (
-          <Typography variant="h6" sx={{ color: 'text.secondary', mt: 4 }}>
-            {code ? 'Nenhum produto encontrado com este código.' : 'Nenhum produto disponível.'}
-          </Typography>
-        ) : (
-          filteredProducts.map((product) => (
-            <Box key={product.id}>
-              <ProductCard product={product} />
-            </Box>
-          ))
-        )}
-      </Stack>
+      {loading ? (
+        <Typography variant="h6" sx={{ color: 'text.secondary', mt: 4 }}>
+          Carregando produtos...
+        </Typography>
+      ) : (
+        <Stack spacing={3}>
+          {filteredProducts.length === 0 ? (
+            <Typography variant="h6" sx={{ color: 'text.secondary', mt: 4 }}>
+              {code ? 'Nenhum produto encontrado com este código.' : 'Nenhum produto disponível.'}
+            </Typography>
+          ) : (
+            filteredProducts.map((product) => (
+              <Box key={product.id}>
+                <ProductCard product={product} />
+              </Box>
+            ))
+          )}
+        </Stack>
+      )}
     </Box>
   );
 };

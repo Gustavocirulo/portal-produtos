@@ -10,10 +10,11 @@ import {
 } from '@mui/material';
 import { Product } from '../contexts/ProductsContext';
 
+
 interface EditProductModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (productData: Omit<Product, 'id'>) => void;
+  onSave: (productData: Omit<Product, 'id'>) => Promise<void>;
   product: Product;
 }
 
@@ -24,6 +25,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
     price: product.price.toString(),
     category: product.category,
     pictureUrl: product.pictureUrl,
+    stock: product.hasOwnProperty('stock') ? String((product as any).stock ?? 1) : '1',
   });
 
   const [errors, setErrors] = useState({
@@ -32,6 +34,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
     price: '',
     category: '',
     pictureUrl: '',
+    stock: '',
   });
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +58,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
       price: '',
       category: '',
       pictureUrl: '',
+      stock: '',
     };
 
     if (!formData.name.trim()) {
@@ -83,7 +87,8 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
     return Object.values(newErrors).every(error => error === '');
   };
 
-  const handleSave = () => {
+
+  const handleSave = async () => {
     if (validateForm()) {
       const productData = {
         name: formData.name.trim(),
@@ -91,9 +96,9 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
         price: Number(formData.price),
         category: formData.category.trim(),
         pictureUrl: formData.pictureUrl.trim(),
+        stock: formData.stock.trim() === '' ? 1 : Number(formData.stock),
       };
-
-      onSave(productData);
+      await onSave(productData);
       onClose();
     }
   };
@@ -106,6 +111,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
       price: product.price.toString(),
       category: product.category,
       pictureUrl: product.pictureUrl,
+      stock: product.hasOwnProperty('stock') ? String((product as any).stock ?? 1) : '1',
     });
     setErrors({
       name: '',
@@ -113,7 +119,18 @@ const EditProductModal: React.FC<EditProductModalProps> = ({ open, onClose, onSa
       price: '',
       category: '',
       pictureUrl: '',
+      stock: '',
     });
+          <TextField
+            fullWidth
+            label="Quantidade em estoque"
+            type="number"
+            value={formData.stock}
+            onChange={handleChange('stock')}
+            error={!!errors.stock}
+            helperText={errors.stock || 'Se não preenchido, será considerado 1'}
+            inputProps={{ min: 1, step: 1 }}
+          />
     onClose();
   };
 

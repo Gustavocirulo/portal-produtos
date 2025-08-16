@@ -22,6 +22,7 @@ const NewProduct: React.FC = () => {
     price: '',
     category: '',
     pictureUrl: '',
+    stock: '',
   });
 
   const [errors, setErrors] = useState({
@@ -30,6 +31,7 @@ const NewProduct: React.FC = () => {
     price: '',
     category: '',
     pictureUrl: '',
+    stock: '',
   });
 
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +56,7 @@ const NewProduct: React.FC = () => {
       price: '',
       category: '',
       pictureUrl: '',
+      stock: '',
     };
 
     if (!formData.name.trim()) {
@@ -74,23 +77,24 @@ const NewProduct: React.FC = () => {
       newErrors.category = 'Categoria é obrigatória';
     }
 
-    if (!formData.pictureUrl.trim()) {
-      newErrors.pictureUrl = 'URL da imagem é obrigatória';
-    }
-
-    setErrors(newErrors);
-    return Object.values(newErrors).every(error => error === '');
+  setErrors(newErrors);
+  return Object.values(newErrors).every(error => error === '');
   };
 
   const handleCreate = () => {
     if (validateForm()) {
+
+
+
       const productData = {
         name: formData.name.trim(),
         description: formData.description.trim(),
         price: Number(formData.price),
         category: formData.category.trim(),
         pictureUrl: formData.pictureUrl.trim(),
+        stock: formData.stock.trim() === '' ? 1 : Number(formData.stock),
       };
+
 
       addProduct(productData);
       

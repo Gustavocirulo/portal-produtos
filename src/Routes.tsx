@@ -1,37 +1,63 @@
 import { createBrowserRouter, LoaderFunction, Outlet } from 'react-router-dom';
-import { Layout, RouteErrorBoundary } from './components';
-import { Home, About, Categories, Contact, NotFound } from './pages';
+import { Layout, RouteErrorBoundary, ProtectedRoute } from './components';
+import { Home, About, Categories, Contact, NotFound, Login } from './pages';
 import NewProduct from './pages/NewProduct';
-import productsData from './mock.json';
+import { apiService, ApiProduct } from './services/apiService';
 import { Product } from './contexts/ProductsContext';
 
-// Componente wrapper para o Layout com Outlet
-const LayoutWrapper: React.FC = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
+// Função para converter ApiProduct em Product
+const convertApiProductToProduct = (apiProduct: ApiProduct): Product => ({
+  id: apiProduct.id,
+  name: apiProduct.name,
+  description: apiProduct.description,
+  price: parseFloat(apiProduct.price),
+  category: apiProduct.category,
+  pictureUrl: apiProduct.pictureUrl,
+  stock: parseFloat(apiProduct.stock)
+});
+
+// Componente wrapper para o Layout protegido com Outlet
+const ProtectedLayoutWrapper: React.FC = () => (
+  <ProtectedRoute>
+    <Layout>
+      <Outlet />
+    </Layout>
+  </ProtectedRoute>
 );
 
 // Loader para carregar os produtos
 export const productsLoader: LoaderFunction = async () => {
-  // Simula delay de carregamento (como uma API call)
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return { products: productsData as Product[] };
+  try {
+    const apiProducts = await apiService.fetchProducts();
+    const products = apiProducts.map(convertApiProductToProduct);
+    return { products };
+  } catch (error) {
+    console.error('Erro ao carregar produtos:', error);
+    return { products: [] };
+  }
 };
 
 // Loader para categorias
 export const categoriesLoader: LoaderFunction = async () => {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  const products = productsData as Product[];
-  const categories = Array.from(new Set(products.map(product => product.category)));
-  return { categories };
+  try {
+    const categories = await apiService.fetchCategories();
+    return { categories };
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    return { categories: [] };
+  }
 };
 
 // Configuração das rotas com loaders
 export const router = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
     path: "/",
-    element: <LayoutWrapper />,
+    element: <ProtectedLayoutWrapper />,
     errorElement: <RouteErrorBoundary />,
     children: [
       {

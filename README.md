@@ -142,7 +142,35 @@ Os arquivos são minificados e incluem hashes nos nomes.
 ⚠️ **Operação irreversível!** Remove a abstração do Create React App.\
 Use apenas se precisar de configurações avançadas.
 
-## 🤝 Contribuição
+
+## � Testes Unitários
+
+O projeto possui testes automatizados para garantir a corretude da listagem de produtos, incluindo:
+
+- **Exibição dos produtos**: Valida se a lista mostra corretamente os produtos vindos do contexto/loader.
+- **Filtragem**: Garante que a busca filtra os produtos exibidos conforme o texto digitado.
+
+Os testes utilizam **React Testing Library** e **Jest**.
+
+
+### Como rodar os testes
+
+1. Instale as dependências (caso ainda não tenha feito):
+	```bash
+	npm install
+	```
+2. Execute os testes:
+	```bash
+	npm test
+	```
+	O comando já está configurado para rodar o Jest com o arquivo `jest.config.js` personalizado, garantindo que aliases, paths e outras customizações funcionem corretamente.
+
+> **Nota:**
+> O comando padrão do Create React App (`react-scripts test`) ignora o arquivo `jest.config.js` e usa apenas a configuração interna do CRA. Por isso, o script de teste foi alterado no `package.json` para rodar `npx jest --config jest.config.js`, permitindo o uso de aliases TypeScript, mapeamento de módulos e outras configurações avançadas.
+
+Os arquivos de teste ficam em `src/__tests__`.
+
+---
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)

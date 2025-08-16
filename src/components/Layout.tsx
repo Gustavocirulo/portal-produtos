@@ -14,8 +14,12 @@ import {
   ListItemText,
   useTheme,
   useMediaQuery,
+  Avatar,
+  Menu,
+  MenuItem as MuiMenuItem,
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const drawerWidth = 240;
 
@@ -39,9 +43,11 @@ const menuItems: MenuItem[] = [
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const handleDrawerToggle = () => {
     if (isMobile) {
@@ -58,6 +64,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   const isActivePath = (path: string) => location.pathname === path;
+
+  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleUserMenuClose();
+  };
 
   const drawerContent = (
     <Box>
@@ -154,9 +173,61 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           >
             <span>☰</span>
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', flexGrow: 1 }}>
             Portal de Produtos
           </Typography>
+          
+          {/* Menu do usuário */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              {user?.email}
+            </Typography>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="menu do usuário"
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              onClick={handleUserMenuOpen}
+              color="inherit"
+            >
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
+                {user?.email?.[0]?.toUpperCase() || 'U'}
+              </Avatar>
+            </IconButton>
+            <Menu
+              id="user-menu"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleUserMenuClose}
+            >
+              <MuiMenuItem onClick={handleUserMenuClose} disabled>
+                <Typography variant="body2">
+                  {user?.email}
+                </Typography>
+              </MuiMenuItem>
+              <MuiMenuItem onClick={handleUserMenuClose} disabled>
+                <Typography variant="caption" color="text.secondary">
+                  Função: {user?.role || 'Usuário'}
+                </Typography>
+              </MuiMenuItem>
+              <Divider />
+              <MuiMenuItem onClick={handleLogout}>
+                <Typography variant="body2" color="error">
+                  Sair
+                </Typography>
+              </MuiMenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
 
