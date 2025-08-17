@@ -9,19 +9,28 @@ Este projeto é uma aplicação web para gerenciamento de produtos, permitindo v
 ## 🚀 Funcionalidades
 
 - **Listagem de Produtos**: Visualização de todos os produtos em cards organizados
-- **Pesquisa por ID**: Filtro para encontrar produtos específicos
+- **Pesquisa por ID**: Filtro para encontrar produtos específicos (apenas números)
 - **Criação de Produtos**: Formulário completo para adicionar novos produtos
 - **Edição de Produtos**: Modal para editar informações de produtos existentes
 - **Exclusão de Produtos**: Confirmação segura antes de remover produtos
+- **Importação em Massa via CSV**: Upload e processamento de arquivos CSV para criação múltipla de produtos
+- **Autenticação JWT**: Sistema de login e proteção de rotas
+- **Integração com API**: Conectado com backend para operações CRUD
 - **Layout Responsivo**: Interface adaptável para desktop e mobile
 - **Navegação**: Menu lateral com diferentes seções do portal
+- **Notificações**: Sistema de toasts para feedback das operações
 
+
+## 🛠 Tecnologias Utilizadas
 
 - **React 19.1.0** - Biblioteca principal
 - **TypeScript 4.9.5** - Tipagem estática
 - **Material-UI 7.2.0** - Componentes de interface
-- **React Router DOM 6.29.0** - Roteamento
+- **React Router DOM 7.7.1** - Roteamento moderno com loaders
 - **Axios** - Cliente HTTP para requisições à API
+- **JWT** - Autenticação baseada em tokens
+- **Jest** - Framework de testes unitários
+- **React Testing Library** - Testes de componentes React
 - **CSS Modules** - Estilização modular
 - **Context API** - Gerenciamento de estado global
 
@@ -33,23 +42,34 @@ src/
 │   ├── Layout.tsx       # Layout principal com sidebar
 │   ├── ProductCard.tsx  # Card de produto
 │   ├── EditProductModal.tsx     # Modal de edição
-│   └── DeleteConfirmationModal.tsx # Modal de confirmação
+│   ├── DeleteConfirmationModal.tsx # Modal de confirmação
+│   ├── CSVImportModal.tsx       # Modal de importação CSV
+│   └── ProtectedRoute.tsx       # Proteção de rotas
 ├── contexts/            # Contextos do React
-│   └── ProductsContext.tsx # Estado global dos produtos
+│   ├── ProductsContext.tsx # Estado global dos produtos
+│   ├── AuthContext.tsx     # Contexto de autenticação
+│   └── SnackbarContext.tsx # Contexto de notificações
 ├── pages/               # Páginas da aplicação
-│   ├── Home.tsx         # Página principal
+│   ├── Home.tsx         # Página principal (portal de produtos)
 │   ├── NewProduct.tsx   # Formulário de novo produto
+│   ├── MassImport.tsx   # Página de importação em massa
+│   ├── Login.tsx        # Página de login
 │   ├── Categories.tsx   # Página de categorias
 │   ├── About.tsx        # Página sobre
 │   └── Contact.tsx      # Página de contato
-├── mock.json           # Dados de exemplo
+├── services/            # Serviços de API
+│   └── apiService.ts    # Cliente HTTP com Axios
+├── __tests__/           # Testes unitários
+│   └── ProductList.test.tsx # Testes da listagem
 └── App.tsx             # Componente raiz
 ```
 
 ## 🎯 Páginas Disponíveis
 
-- **Home (/)** - Lista de produtos com filtro e botão para criar novo produto
+- **Login (/login)** - Autenticação para acesso ao sistema
+- **Home (/)** - Portal de produtos com filtro, busca e botão de importação CSV
 - **Novo Produto (/novo-produto)** - Formulário para adicionar produtos
+- **Importação em Massa (/importacao-massa)** - Interface para importação de produtos via CSV
 - **Categorias (/categories)** - Página de categorias (em desenvolvimento)
 - **Sobre (/about)** - Informações sobre o projeto
 - **Contato (/contact)** - Página de contato
@@ -90,10 +110,12 @@ npm start
 - **📞 Contato** - Formulário de contato
 
 ### Recursos dos Produtos
-- **Visualização**: Cards com imagem, nome, descrição, preço e categoria
-- **Filtro**: Busca por ID do produto
-- **CRUD Completo**: Criar, editar e excluir produtos
+- **Visualização**: Cards com imagem, nome, descrição, preço, categoria e estoque
+- **Filtro**: Busca por código do produto (apenas números)
+- **CRUD Completo**: Criar, editar e excluir produtos via API
+- **Importação CSV**: Upload de arquivos CSV para criação em massa
 - **Validação**: Formulários com validação de campos obrigatórios
+- **Notificações**: Feedback em tempo real das operações
 
 ## 🎨 Design e Responsividade
 
@@ -104,21 +126,47 @@ npm start
 
 ## 🔄 Gerenciamento de Estado
 
-O projeto utiliza React Context API para gerenciar o estado global dos produtos:
+O projeto utiliza React Context API para gerenciar o estado global:
 
-- **ProductsContext**: Centraliza operações CRUD
-- **Estado de Loading**: Indicadores visuais durante operações
-- **Persistência**: Dados mantidos em memória durante a sessão
+- **ProductsContext**: Centraliza operações CRUD com integração à API
+- **AuthContext**: Gerencia autenticação JWT e proteção de rotas
+- **SnackbarContext**: Sistema global de notificações e toasts
+- **Estado de Loading**: Indicadores visuais durante operações assíncronas
+- **Persistência**: Dados sincronizados com backend via API REST
 
-## 📊 Dados de Exemplo
+## 📊 Integração com API
 
-O arquivo `mock.json` contém produtos de exemplo com as seguintes propriedades:
-- `id` - Identificador único
-- `name` - Nome do produto
-- `description` - Descrição detalhada
-- `price` - Preço em reais
-- `category` - Categoria do produto
-- `pictureUrl` - URL da imagem
+O projeto está integrado com uma API REST para todas as operações:
+
+### Endpoints Utilizados:
+- **POST /login** - Autenticação de usuários
+- **GET /products** - Listagem de produtos
+- **POST /products** - Criação de produtos
+- **PUT /products/:id** - Atualização de produtos
+- **DELETE /products/:id** - Exclusão de produtos
+- **GET /categories** - Listagem de categorias
+
+### Autenticação:
+- **JWT Tokens** para autenticação
+- **Headers Authorization** em todas as requisições protegidas
+- **Refresh Token** para renovação automática
+
+## 📁 Importação CSV
+
+### Funcionalidades:
+- **Template CSV**: Download de arquivo modelo com campos corretos
+- **Validação de Formato**: Verificação de extensão .csv
+- **Codificação UTF-8**: Suporte completo a acentos e caracteres especiais
+- **Parser Robusto**: Detecta separadores (vírgula ou ponto e vírgula)
+- **Seleção Individual**: Checkboxes para escolher produtos a importar
+- **Status Individual**: Feedback de sucesso/erro para cada produto
+- **Importação Silenciosa**: Não interfere na interface durante o processo
+
+### Formato do CSV:
+```csv
+name,description,price,category,pictureUrl,stock
+"Produto Exemplo","Descrição com acentos","99.99","Categoria","https://exemplo.com/img.jpg","10"
+```
 
 ## 🚀 Scripts Disponíveis
 
@@ -130,8 +178,8 @@ Abra [http://localhost:3000](http://localhost:3000) para visualizar no navegador
 A página recarrega automaticamente quando você faz alterações.
 
 ### `npm test`
-Executa os testes em modo interativo.\
-Veja mais informações sobre [execução de testes](https://facebook.github.io/create-react-app/docs/running-tests).
+Executa os testes unitários usando Jest e React Testing Library.\
+Configurado com `jest.config.js` personalizado para suporte a TypeScript e aliases.
 
 ### `npm run build`
 Gera a build de produção na pasta `build`.\
@@ -141,6 +189,27 @@ Os arquivos são minificados e incluem hashes nos nomes.
 ### `npm run eject`
 ⚠️ **Operação irreversível!** Remove a abstração do Create React App.\
 Use apenas se precisar de configurações avançadas.
+
+## 🆕 Últimas Atualizações
+
+### v2.0 - Funcionalidades Avançadas
+- ✅ **Sistema de Autenticação JWT** completo
+- ✅ **Integração com API REST** para todas as operações
+- ✅ **Importação em Massa via CSV** com interface intuitiva
+- ✅ **Validação de Entrada Numérica** no campo código
+- ✅ **Sistema de Notificações** com toasts
+- ✅ **Filtro de Busca Aprimorado** com botão dedicado
+- ✅ **Proteção de Rotas** baseada em autenticação
+- ✅ **Testes Unitários** com React Testing Library
+- ✅ **Correção de Codificação UTF-8** para caracteres especiais
+- ✅ **Interface de Status Persistente** na importação
+
+### Melhorias Técnicas:
+- **React Router v7+** com loaders modernos
+- **Axios** substituindo fetch para melhor controle de requisições
+- **Context API aprimorado** com múltiplos contextos especializados
+- **Estado isolado** para importação em massa
+- **Parser CSV robusto** com detecção automática de separadores
 
 
 ## � Testes Unitários

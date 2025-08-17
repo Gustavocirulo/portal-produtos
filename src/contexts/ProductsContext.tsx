@@ -31,7 +31,7 @@ const convertProductToCreateRequest = (product: ProductInput): ProductCreateRequ
   price: product.price,
   category: product.category,
   pictureUrl: product.pictureUrl,
-  stock: 0, // Valor padrão, pois não temos stock no frontend ainda
+  stock: product.stock,
 });
 
 interface ProductInput {
@@ -46,6 +46,7 @@ interface ProductInput {
 interface ProductsContextType {
   products: Product[];
   addProduct: (product: ProductInput) => void;
+  addProductSilent: (product: ProductInput) => Promise<void>;
   updateProduct: (id: number, productData: ProductInput) => void;
   deleteProduct: (id: number) => void;
   reloadProducts: () => Promise<void>;
@@ -136,6 +137,20 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({ children }) 
     }
   };
 
+  // Função para adicionar produto sem recarregar a lista (para importação em massa)
+  const addProductSilent = async (productData: ProductInput): Promise<void> => {
+    if (!token) {
+      throw new Error('Token de autenticação não encontrado');
+    }
+
+    const createRequest = convertProductToCreateRequest(productData);
+    const response = await apiService.createProduct(createRequest);
+    
+    if (!response.success) {
+      throw new Error(response.message || 'Erro ao criar produto.');
+    }
+  };
+
   const updateProduct = async (id: number, productData: ProductInput) => {
     if (!token) {
       console.error('Token de autenticação não encontrado');
@@ -186,6 +201,7 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({ children }) 
   const value: ProductsContextType = {
     products,
     addProduct,
+    addProductSilent,
     updateProduct,
     deleteProduct,
     reloadProducts,

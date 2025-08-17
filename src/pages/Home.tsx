@@ -4,12 +4,36 @@ import { Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Stack } from '@mui/material';
 import ProductCard from '../components/ProductCard';
 import { useProducts } from '../contexts/ProductsContext';
+import CSVImportModal from '../components/CSVImportModal';
 
 
 const Home: React.FC = () => {
-  const { products, loading } = useProducts();
+  const { products, loading, reloadProducts } = useProducts();
   const [code, setCode] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [csvModalOpen, setCsvModalOpen] = useState(false);
+
+  // Função para buscar produto por código
+  const handleSearch = async () => {
+    if (!code.trim()) {
+      setFilteredProducts(products);
+      return;
+    }
+    
+    try {
+      await reloadProducts();
+      const filtered = products.filter((p) => String(p.id) === code.trim());
+      setFilteredProducts(filtered);
+    } catch (error) {
+      console.error('Erro ao buscar produto:', error);
+    }
+  };
+
+  // Função para lidar com mudanças no campo código (apenas números)
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    setCode(value);
+  };
 
   // useEffect para filtrar produtos automaticamente com debounce
   useEffect(() => {
@@ -32,14 +56,23 @@ const Home: React.FC = () => {
         <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
           Portal de Produtos
         </Typography>
-        <Button
-          component={Link}
-          to="/novo-produto"
-          variant="contained"
-          size="large"
-        >
-          Novo Produto
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={() => setCsvModalOpen(true)}
+          >
+            Arquivo CSV
+          </Button>
+          <Button
+            component={Link}
+            to="/novo-produto"
+            variant="contained"
+            size="large"
+          >
+            Novo Produto
+          </Button>
+        </Box>
       </Box>
       
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, gap: 2 }}>
@@ -48,10 +81,21 @@ const Home: React.FC = () => {
           variant="outlined"
           size="small"
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={handleCodeChange}
           sx={{ width: 200 }}
           placeholder="Digite o código do produto..."
+          inputProps={{
+            pattern: '[0-9]*',
+            inputMode: 'numeric'
+          }}
         />
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          size="small"
+        >
+          Buscar
+        </Button>
       </Box>
       {loading ? (
         <Typography variant="h6" sx={{ color: 'text.secondary', mt: 4 }}>
@@ -72,6 +116,11 @@ const Home: React.FC = () => {
           )}
         </Stack>
       )}
+
+      <CSVImportModal
+        open={csvModalOpen}
+        onClose={() => setCsvModalOpen(false)}
+      />
     </Box>
   );
 };

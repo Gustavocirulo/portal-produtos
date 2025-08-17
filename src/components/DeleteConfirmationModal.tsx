@@ -26,7 +26,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ open,
       <DialogTitle>Confirmar Exclusão</DialogTitle>
       <DialogContent>
         <Typography>
-          Tem certeza que deseja excluir o produto "{productName}"?
+          Você quer mesmo excluir este produto "{productName}"?
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           Esta ação não pode ser desfeita.
@@ -34,10 +34,10 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ open,
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>
-          Cancelar
+          Não
         </Button>
         <Button onClick={handleConfirm} variant="contained" color="error">
-          Excluir
+          Sim
         </Button>
       </DialogActions>
     </Dialog>

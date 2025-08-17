@@ -2,6 +2,7 @@ import { createBrowserRouter, LoaderFunction, Outlet } from 'react-router-dom';
 import { Layout, RouteErrorBoundary, ProtectedRoute } from './components';
 import { Home, About, Categories, Contact, NotFound, Login } from './pages';
 import NewProduct from './pages/NewProduct';
+import MassImport from './pages/MassImport';
 import { apiService, ApiProduct } from './services/apiService';
 import { Product } from './contexts/ProductsContext';
 
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
       {
         path: "novo-produto",
         element: <NewProduct />,
+      },
+      {
+        path: "importacao-massa",
+        element: <MassImport />,
       },
       {
         path: "categories",
